@@ -92,3 +92,61 @@
 
 </body>
 </html>
+
+
+
+
+
+<!-- Week 3 Lab — Registration form demo (separate from the AxiomMath site pages) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AxiomMath | Secure Registration</title>
+
+<!-- Tailwind Core CDN Integration -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  // Extend Tailwind's default theme with AxiomMath's palette and type system
+  // so this lab page matches the rest of the site instead of default Tailwind gray/blue.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#2563EB',
+          'primary-dark': '#1d4ed8',
+          accent: '#38BDF8',
+          dark: '#0F172A',
+          muted: '#64748B',
+          line: '#E2E8F0',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          sans: ['Inter', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Add smooth custom transitions on state updates */
+  .state-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+</style>
+</head>
+<body class="bg-[#F8FAFC] font-sans text-dark antialiased min-h-screen">
+
+<div id="app" class="max-w-4xl mx-auto p-6">
+  <!-- Components will be programmatically rendered here by app.js -->
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
