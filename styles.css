@@ -368,142 +368,111 @@ footer{background:var(--dark); color:#94A3B8; padding:64px 0 28px; margin-top:40
   .review-grid{grid-template-columns:1fr;}
   .nav-links{display:none;}
   h1{font-size:38px;}
+  .page-intro h1{font-size:40px;}
+  .page-intro p{font-size:18px;}
+  .container h2{font-size:30px;}
+  .goal blockquote{font-size:20px;}
 }
 
+/* =========================================================
+   SUB-PAGES (About, How It Works)
+   Shared banner + content-block styles so every inner page
+   matches the homepage's type system and palette.
+   ========================================================= */
 
-
-
-
-
-
-
-.section {
-  padding: 80px 0;
-  position: relative;
-  z-index: 1; 
+/* Banner used at the top of every sub-page (distinct from
+   the two-column homepage .hero so the two never collide) */
+.page-intro{
+  background:linear-gradient(135deg, var(--primary), var(--accent));
+  color:#fff; text-align:center;
+  padding:90px 24px; position:relative; overflow:hidden;
+}
+.page-intro .eyebrow{
+  background:rgba(255,255,255,0.18); color:#fff;
+}
+.page-intro h1{
+  font-size:44px; margin-bottom:14px; color:#fff;
+}
+.page-intro p{
+  font-size:19px; color:rgba(255,255,255,0.9); max-width:520px; margin:0 auto;
 }
 
-.section-head {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto 60px;
+/* Generic centered content wrapper for sub-pages */
+.container{
+  width:90%; max-width:1100px; margin:0 auto; padding:70px 0;
+  position:relative; z-index:1;
+}
+.container h2{
+  text-align:center; color:var(--dark); margin-bottom:20px;
+  font-family:var(--font-display); font-weight:700; font-size:34px; letter-spacing:-0.02em;
+}
+.container > p{
+  font-size:17px; line-height:1.7; margin:0 auto 18px; max-width:720px;
+  text-align:center; color:var(--muted);
 }
 
-.section-head .label {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--accent); 
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  display: block;
-  margin-bottom: 12px;
+.mission{background:#fff;}
+
+.cards{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px; margin-top:36px;
+}
+.card{
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  padding:28px; transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 18px 36px -18px rgba(15,23,42,0.18);
+  border-color:rgba(37,99,235,0.25);
+}
+.card h3{font-family:var(--font-display); font-size:17px; margin-bottom:10px; color:var(--primary);}
+.card p{font-size:14.5px; color:var(--muted); line-height:1.6; text-align:left;}
+
+.choose{background:var(--primary); color:#fff;}
+.choose h2{color:#fff;}
+.choose ul{list-style:none; max-width:640px; margin:0 auto;}
+.choose li{
+  padding:14px 4px; font-size:16px; border-bottom:1px solid rgba(255,255,255,0.12);
+}
+.choose li:last-child{border-bottom:none;}
+
+.future{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:18px; margin-top:32px;
+}
+.future div{
+  background:#fff; border:1px solid var(--line); padding:24px;
+  border-radius:14px; text-align:center; font-weight:600; font-family:var(--font-display);
+  font-size:14.5px; color:var(--dark);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.future div:hover{transform:translateY(-4px); box-shadow:0 14px 28px -16px rgba(15,23,42,0.16);}
+
+.goal{background:#EEF4FF; text-align:center; padding:80px 24px;}
+.goal h2{color:var(--dark);}
+.goal blockquote{
+  font-family:var(--font-display); font-size:24px; font-weight:500;
+  font-style:italic; color:var(--dark); max-width:760px; margin:0 auto; line-height:1.5;
 }
 
-.section-head h2 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 36px;
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
+/* Reusable centering helper (used sparingly, not a layout system) */
+.cta-center{text-align:center;}
+
+/* Step rows for How It Works — reuses .timeline's spacing rhythm
+   but stacks vertically since a dedicated page has room to breathe */
+.steps{display:flex; flex-direction:column; gap:0; margin-top:36px;}
+.step-row{
+  display:flex; align-items:flex-start; gap:22px;
+  padding:22px 4px; border-bottom:1px dashed var(--line);
 }
+.step-row:last-child{border-bottom:none;}
+.step-row .tdot{margin-bottom:0; flex-shrink:0;}
+.step-row .step-copy h3{font-family:var(--font-display); font-size:17px; margin-bottom:6px;}
+.step-row .step-copy p{color:var(--muted); font-size:14.5px; line-height:1.6;}
 
-.section-head p {
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-
-.timeline {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  position: relative;
-}
-
-
-.timeline::before {
-  content: "";
-  position: absolute;
-  top: 25px;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
-  z-index: 0;
-}
-
-
-.tstep {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  flex: 1;
-  max-width: 250px;
-  position: relative;
-  z-index: 1;
-}
-
-
-.tdot {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid var(--primary); /* blue color */
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 15px rgba(37,99,235,0.1);
-}
-
-
-.tstep h5 {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.tstep p {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-
-@media (max-width: 768px) {
-  .timeline {
-    flex-direction: column;
-    gap: 40px;
-    align-items: flex-start;
-    padding-left: 20px;
-  }
-  
-  .timeline::before {
-    top: 10%;
-    bottom: 10%;
-    left: 25px; 
-    width: 2px;
-    height: 80%;
-    background: repeating-linear-gradient(180deg, var(--line) 0 6px, transparent 6px 12px);
-  }
-  
-  .tstep {
-    flex-direction: row;
-    text-align: left;
-    max-width: 100%;
-    gap: 20px;
-  }
-  
-  .tdot {
-    margin-bottom: 0;
-    flex-shrink: 0;
-  }
+@media (max-width:600px){
+  .page-intro{padding:64px 20px;}
+  .page-intro h1{font-size:32px;}
+  .choose li{font-size:14.5px;}
 }
