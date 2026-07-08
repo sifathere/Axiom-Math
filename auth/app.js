@@ -1,4 +1,3 @@
-
 const appContainer = document.getElementById('app');
 let currentView = 'login'; // Global toggle state: 'login' or 'signup'
 if(localStorage.getItem('auth_intent')) {
@@ -116,21 +115,6 @@ function attachLoginListeners() {
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
 
-    // --------------------------------------------------------
-    // DATABASE CONNECTION LAYER (LOGIN)
-    // --------------------------------------------------------
-    /* WHEN CONNECTING TO DATABASE LATER:
-      try {
-        const response = await fetch('http://localhost:5000/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await response.json();
-        if (response.ok) { renderDashboard(data.user); } 
-        else { errorContainer.innerText = data.message; errorContainer.classList.remove('hidden'); }
-      } catch (err) { ... }
-    */
 
     // CURRENT LOCAL TESTING INTERACTION:
     const mockUsers = JSON.parse(localStorage.getItem('mock_db_users')) || [];
@@ -219,19 +203,7 @@ function attachSignupListeners() {
     }
 
     if (formIsValid) {
-      // --------------------------------------------------------
-      // DATABASE CONNECTION LAYER (SIGNUP)
-      // --------------------------------------------------------
-      /* WHEN CONNECTING TO DATABASE LATER:
-        try {
-          const response = await fetch('http://localhost:5000/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-          if (response.ok) { currentView = 'login'; renderApp(); }
-        } catch(err) { ... }
-      */
+      
 
       // CURRENT LOCAL TESTING INTERACTION:
       let mockUsers = JSON.parse(localStorage.getItem('mock_db_users')) || [];
@@ -251,6 +223,28 @@ function attachSignupListeners() {
   });
 }
 
+
+function StatsCardComponent(title, count, accentClass) {
+  return `
+    <div class="bg-white border border-line rounded-xl p-5 text-left shadow-sm state-transition hover:shadow-md">
+      <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">${title}</h3>
+      <p class="text-3xl font-display font-bold text-dark mt-2">${count}</p>
+      <div class="flex items-center mt-3">
+        <span class="h-2.5 w-2.5 rounded-full ${accentClass} mr-2"></span>
+        <span class="text-xs text-muted">This week</span>
+      </div>
+    </div>
+  `;
+}
+
+// Simulated data model — a real build would fetch this per-user from the backend.
+// A brand-new account starts at sensible defaults rather than fake history.
+const dashboardStats = [
+  { title: 'Problems Solved',     count: '0', accentClass: 'bg-primary'    },
+  { title: 'Formulas Bookmarked', count: '0', accentClass: 'bg-accent'     },
+  { title: 'Day Streak',          count: '1', accentClass: 'bg-green-500'  },
+];
+
 // ============================================================
 // SIMULATED SYSTEM SUCCESS DASHBOARD
 // ============================================================
@@ -260,17 +254,20 @@ function renderSuccessDashboard(authenticatedEmail) {
       <div class="inline-flex items-center justify-center h-16 w-16 bg-green-100 text-green-600 rounded-full mb-6 text-2xl font-bold">✓</div>
       <h1 class="font-display text-4xl font-bold text-dark mb-4">Authentication Secure</h1>
       <p class="text-muted text-lg mb-8">Access granted for: <span class="font-mono text-primary font-semibold">${authenticatedEmail}</span></p>
-      
-      <div class="bg-white border border-line rounded-xl p-6 text-left shadow-sm">
-        <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-4">AxiomMath Workspace</h2>
-        <p class="text-dark">Your persistent state verification layers passed successfully. The application context is now initialized.</p>
-      </div>
 
-      <button id="btn-logout" class="mt-8 text-sm text-muted hover:text-dark underline font-medium">
+      <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-4 text-left">AxiomMath Workspace</h2>
+      <div id="dashboard-stats" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"></div>
+
+      <button id="btn-logout" class="mt-2 text-sm text-muted hover:text-dark underline font-medium">
         Log Out Securely
       </button>
     </div>
   `;
+
+  // Array mapping: build every stat card from the single component function above
+  document.getElementById('dashboard-stats').innerHTML = dashboardStats
+    .map(stat => StatsCardComponent(stat.title, stat.count, stat.accentClass))
+    .join('');
 
   document.getElementById('btn-logout').addEventListener('click', () => {
     currentView = 'login';
