@@ -1,4 +1,3 @@
-<!-- Week 3 Lab — Registration form demo (separate from the AxiomMath site pages) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +8,7 @@
 <!-- Tailwind Core CDN Integration -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-  // Extend Tailwind's default theme with AxiomMath's palette and type system
-  // so this lab page matches the rest of the site instead of default Tailwind gray/blue.
+
   tailwind.config = {
     theme: {
       extend: {
@@ -43,6 +41,13 @@
 </style>
 </head>
 <body class="bg-[#F8FAFC] font-sans text-dark antialiased min-h-screen">
+
+<div class="max-w-4xl mx-auto px-6 pt-6">
+  <a href="../index.html" class="inline-flex items-center gap-2 font-display font-bold text-lg text-dark hover:text-primary state-transition">
+    <span class="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-mono text-sm">∫</span>
+    AxiomMath
+  </a>
+</div>
 
 <div id="app" class="max-w-4xl mx-auto p-6">
   <!-- Components will be programmatically rendered here by app.js -->
