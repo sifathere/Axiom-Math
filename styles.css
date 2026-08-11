@@ -476,3 +476,15 @@ footer{background:var(--dark); color:#94A3B8; padding:64px 0 28px; margin-top:40
   .page-intro h1{font-size:32px;}
   .choose li{font-size:14.5px;}
 }
+
+/* Formula expression display — used on formulas.php */
+.formula-expr{
+  font-family:var(--font-mono);
+  background:#F1F5F9;
+  border-radius:8px;
+  padding:10px 14px;
+  margin:10px 0;
+  font-size:14px;
+  color:var(--primary);
+  overflow-x:auto;
+}
