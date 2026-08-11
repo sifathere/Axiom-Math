@@ -8,7 +8,7 @@ if (isset($_SESSION['user_email'])) {
     exit();
 }
 
-// // $error_message = "";
+$error_message = "";
 $success_message = $_GET['msg'] ?? "";
 $email = "";
 
@@ -113,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
           placeholder="student@university.edu"
           value="<?php echo htmlspecialchars($email); ?>">
+        <p id="email-error" class="text-red-500 text-xs mt-1 hidden">Please enter a valid email address.</p>
       </div>
 
       <div>
@@ -133,6 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </main>
 </div>
+
+<script src="validation.js"></script>
 
 </body>
 </html>

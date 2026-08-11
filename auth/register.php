@@ -109,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
           placeholder="student@university.edu"
           value="<?php echo htmlspecialchars($email); ?>">
+        <p id="email-error" class="text-red-500 text-xs mt-1 hidden">Please enter a valid email address.</p>
       </div>
 
       <div>
@@ -116,6 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="password" id="password" name="password" required
           class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
           placeholder="At least 8 characters">
+        <div class="mt-2 h-1.5 w-full bg-line rounded-full overflow-hidden">
+          <div id="strength-meter" class="h-full transition-all"></div>
+        </div>
+        <p id="strength-text" class="text-xs text-muted mt-1">Password strength</p>
       </div>
 
       <div>
@@ -123,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="password" id="confirm_password" name="confirm_password" required
           class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
           placeholder="Re-enter password">
+        <p id="match-error" class="text-red-500 text-xs mt-1 hidden">Passwords do not match.</p>
       </div>
 
       <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2.5 rounded-lg transition">
@@ -136,6 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </main>
 </div>
+
+<script src="validation.js"></script>
 
 </body>
 </html>
