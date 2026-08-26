@@ -1,4 +1,13 @@
 <?php
+session_start();
+
+// AI Solver requires login — this is one of the two features that make
+// registering worthwhile, alongside Practice Problems.
+if (!isset($_SESSION['user_id'])) {
+    header("Location: auth/login.php");
+    exit();
+}
+
 require_once 'ai_config.php';
 
 $error_message = "";
@@ -19,7 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 . "A student is working on this problem: \"" . $question . "\". "
                 . "Give exactly ONE short guided hint for the very next step only — never the full "
                 . "final answer or a complete worked solution. Keep it to 2-3 sentences. End by "
-                . "inviting them to ask again if they want the next hint after trying this step.";
+                . "inviting them to ask again if they want the next hint after trying this step. "
+                . "IMPORTANT: Do not use LaTeX formatting or dollar-sign math delimiters (like \$2x\$ "
+                . "or \\(x^2\\)). Write all math in plain text instead — for example, write 2x, x^2, "
+                . "or sqrt(x) with no special symbols wrapping them.";
 
         $url = "https://generativelanguage.googleapis.com/v1beta/models/"
              . GEMINI_MODEL . ":generateContent?key=" . GEMINI_API_KEY;
@@ -47,11 +59,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($curl_error) {
             $error_message = "Could not reach the AI service: " . $curl_error;
         } elseif ($http_code !== 200) {
-            $error_message = "AI service returned an error (HTTP $http_code). "
-                            . "Double-check the API key in ai_config.php.";
+            switch ($http_code) {
+                case 400:
+                    $error_message = "The AI service couldn't process that request. Try rephrasing the problem.";
+                    break;
+                case 401:
+                case 403:
+                    $error_message = "Your API key looks invalid or unauthorized. Double-check it was copied "
+                                    . "correctly (in full, no extra spaces) into ai_config.php.";
+                    break;
+                case 404:
+                    $error_message = "The model name in ai_config.php may be outdated. Check "
+                                    . "aistudio.google.com for the current free model name and update GEMINI_MODEL.";
+                    break;
+                case 429:
+                    $error_message = "You've hit the free tier's rate limit. Wait about a minute and try again.";
+                    break;
+                case 503:
+                    $error_message = "Google's AI service is temporarily overloaded (not a problem with your "
+                                    . "setup). Wait a few seconds and try again.";
+                    break;
+                default:
+                    $error_message = "AI service returned an unexpected error (HTTP $http_code). Try again shortly.";
+            }
         } else {
             $data = json_decode($response, true);
             $ai_response = $data['candidates'][0]['content']['parts'][0]['text'] ?? "";
+            // Safety net: strip any LaTeX $ delimiters that slip through despite the
+            // prompt instruction — the AI mostly follows it, but not 100% of the time.
+            $ai_response = str_replace('$', '', $ai_response);
             if (empty($ai_response)) {
                 $error_message = "The AI didn't return a hint. Try rephrasing the problem.";
             }
@@ -92,11 +128,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="bg-[#F8FAFC] font-sans text-dark antialiased min-h-screen">
 
-<div class="max-w-4xl mx-auto px-6 pt-6">
+<div class="max-w-4xl mx-auto px-6 pt-6 flex justify-between items-center">
   <a href="index.html" class="inline-flex items-center gap-2 font-display font-bold text-lg text-dark hover:text-primary">
     <span class="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-mono text-sm">∫</span>
     AxiomMath
   </a>
+  <div class="flex items-center gap-4 text-sm">
+    <a href="auth/dashboard.php" class="text-muted hover:text-dark transition">Dashboard</a>
+    <a href="auth/logout.php" class="text-muted hover:text-dark transition">Log out</a>
+  </div>
 </div>
 
 <div class="max-w-2xl mx-auto p-6">
@@ -133,6 +173,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
   </main>
 </div>
+
+<footer class="bg-dark text-gray-400 mt-16 py-8 px-6">
+  <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
+    <span>&copy; 2026 AxiomMath. All rights reserved.</span>
+    <div class="flex gap-6">
+      <a href="index.html" class="hover:text-white transition">Home</a>
+      <a href="formulas.php" class="hover:text-white transition">Formula Hub</a>
+      <a href="practice.php" class="hover:text-white transition">Practice</a>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
