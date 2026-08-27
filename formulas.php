@@ -1,7 +1,11 @@
 <?php
+session_start();
+$base_path = '';
 require_once 'auth/db_config.php';
 
-
+// Pull every formula joined with its category name — this is the
+// same JOIN pattern from schema.sql, now actually powering a page
+// instead of just sitting in a query you run manually.
 $sql = "SELECT f.title, f.expression, f.description, c.category_name, c.icon
         FROM formulas f
         INNER JOIN categories c ON f.category_id = c.category_id
@@ -31,21 +35,7 @@ if ($result) {
 </head>
 <body>
 
-<header>
-  <nav>
-    <a href="index.html" class="logo"><span class="mark">∫</span>AxiomMath</a>
-    <div class="nav-links">
-      <a href="formulas.php">Formula Hub</a>
-      <a href="solver.php">AI Solver</a>
-      <a href="how-it-works.html">How it works</a>
-      <a href="about.html">About</a>
-    </div>
-    <div class="nav-cta">
-      <a href="./auth/login.php" class="btn-login">Log in</a>
-      <a href="./auth/register.php" class="btn btn-primary">Sign up free</a>
-    </div>
-  </nav>
-</header>
+<?php include 'includes/nav.php'; ?>
 
 <section class="page-intro">
   <span class="symbol" style="top:18%; left:8%; font-size:34px; color:rgba(255,255,255,0.18);">Σ</span>
@@ -74,49 +64,7 @@ if ($result) {
   <?php endif; ?>
 </section>
 
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-logo"><span class="mark" style="width:26px;height:26px;font-size:13px;">∫</span>AxiomMath</div>
-        <p style="font-size:14px; line-height:1.6;">Making mathematics understandable, one guided step at a time.</p>
-      </div>
-      <div>
-        <h4>Quick links</h4>
-        <ul>
-          <li><a href="formulas.php">Formula library</a></li>
-          <li><a href="how-it-works.html">How it works</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="#">Privacy</a></li>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Help</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Follow</h4>
-        <ul>
-          <li><a href="#">GitHub</a></li>
-          <li><a href="#">LinkedIn</a></li>
-          <li><a href="#">YouTube</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 AxiomMath. All rights reserved.</span>
-      <div class="socials">
-        <a href="#">GitHub</a>
-        <a href="#">LinkedIn</a>
-        <a href="#">YouTube</a>
-      </div>
-    </div>
-  </div>
-</footer>
+<?php include 'includes/footer.php'; ?>
 
 </body>
 </html>

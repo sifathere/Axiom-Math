@@ -1,10 +1,12 @@
 <?php
 session_start();
+$base_path = '../';
 require 'db_config.php';
 
-// If already logged in, no need to register again
-if (isset($_SESSION['user_email'])) {
-    header("Location: dashboard.php");
+// If already logged in, no need to register again — send back to the
+// homepage, not a separate "dashboard" phase.
+if (isset($_SESSION['user_id'])) {
+    header("Location: ../index.php");
     exit();
 }
 
@@ -56,92 +58,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign Up | AxiomMath</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          primary: '#2563EB',
-          'primary-dark': '#1d4ed8',
-          accent: '#38BDF8',
-          dark: '#0F172A',
-          muted: '#64748B',
-          line: '#E2E8F0',
-        },
-        fontFamily: {
-          display: ['"Space Grotesk"', 'sans-serif'],
-          sans: ['Inter', 'sans-serif'],
-        },
-      },
-    },
-  };
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
 </head>
-<body class="bg-[#F8FAFC] font-sans text-dark antialiased min-h-screen">
+<body>
 
-<div class="max-w-4xl mx-auto px-6 pt-6">
-  <a href="../index.html" class="inline-flex items-center gap-2 font-display font-bold text-lg text-dark hover:text-primary">
-    <span class="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-mono text-sm">∫</span>
-    AxiomMath
-  </a>
-</div>
+<?php include '../includes/nav.php'; ?>
 
-<div class="max-w-md mx-auto p-6">
-  <header class="mb-8 text-center">
-    <h1 class="font-display text-3xl font-bold text-dark">Create your account</h1>
-    <p class="text-muted mt-2">Start learning with interactive, guided hints.</p>
-  </header>
+<section class="auth-card">
+  <h1>Create your account</h1>
+  <p>Start learning with interactive, guided hints.</p>
 
-  <main class="bg-white p-8 rounded-2xl shadow-md border border-line">
-    <?php if (!empty($error_message)): ?>
-      <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
-        <?php echo htmlspecialchars($error_message); ?>
-      </div>
-    <?php endif; ?>
+  <?php if (!empty($error_message)): ?>
+    <div class="auth-error"><?php echo htmlspecialchars($error_message); ?></div>
+  <?php endif; ?>
 
-    <form action="register.php" method="POST" class="space-y-5">
-      <div>
-        <label for="email" class="block text-sm font-semibold text-dark mb-1">Email address</label>
-        <input type="email" id="email" name="email" required
-          class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-          placeholder="student@university.edu"
-          value="<?php echo htmlspecialchars($email); ?>">
-        <p id="email-error" class="text-red-500 text-xs mt-1 hidden">Please enter a valid email address.</p>
-      </div>
-
-      <div>
-        <label for="password" class="block text-sm font-semibold text-dark mb-1">Password</label>
-        <input type="password" id="password" name="password" required
-          class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-          placeholder="At least 8 characters">
-        <div class="mt-2 h-1.5 w-full bg-line rounded-full overflow-hidden">
-          <div id="strength-meter" class="h-full transition-all"></div>
-        </div>
-        <p id="strength-text" class="text-xs text-muted mt-1">Password strength</p>
-      </div>
-
-      <div>
-        <label for="confirm_password" class="block text-sm font-semibold text-dark mb-1">Confirm password</label>
-        <input type="password" id="confirm_password" name="confirm_password" required
-          class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-          placeholder="Re-enter password">
-        <p id="match-error" class="text-red-500 text-xs mt-1 hidden">Passwords do not match.</p>
-      </div>
-
-      <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2.5 rounded-lg transition">
-        Register Account
-      </button>
-    </form>
-
-    <div class="mt-6 pt-6 border-t border-line text-center text-sm">
-      <span class="text-muted">Already have an account?</span>
-      <a href="login.php" class="text-primary font-semibold hover:underline ml-1">Log in</a>
+  <form action="register.php" method="POST">
+    <div class="auth-field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" required
+        placeholder="student@university.edu"
+        value="<?php echo htmlspecialchars($email); ?>">
+      <p id="email-error" class="field-error hidden">Please enter a valid email address.</p>
     </div>
-  </main>
-</div>
+
+    <div class="auth-field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required
+        placeholder="At least 8 characters">
+      <div class="strength-bar">
+        <div id="strength-meter" class="strength-fill"></div>
+      </div>
+      <p id="strength-text" class="strength-label">Password strength</p>
+    </div>
+
+    <div class="auth-field">
+      <label for="confirm_password">Confirm password</label>
+      <input type="password" id="confirm_password" name="confirm_password" required
+        placeholder="Re-enter password">
+      <p id="match-error" class="field-error hidden">Passwords do not match.</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Register Account</button>
+  </form>
+
+  <p class="auth-switch">Already have an account? <a href="login.php">Log in</a></p>
+</section>
+
+<?php include '../includes/footer.php'; ?>
 
 <script src="validation.js"></script>
 

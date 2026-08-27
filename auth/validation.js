@@ -19,8 +19,8 @@ if (emailInput) {
     const isValid = EMAIL_REGEX.test(emailInput.value);
     const hasText = emailInput.value.length > 0;
 
-    emailInput.classList.toggle('border-red-500', hasText && !isValid);
-    emailInput.classList.toggle('border-green-500', hasText && isValid);
+    emailInput.classList.toggle('input-error', hasText && !isValid);
+    emailInput.classList.toggle('input-success', hasText && isValid);
 
     if (emailError) {
       emailError.classList.toggle('hidden', !hasText || isValid);
@@ -45,24 +45,24 @@ if (passwordInput && strengthMeter && strengthText) {
 
     if (value.length === 0) {
       strengthMeter.style.width = '0%';
-      strengthMeter.className = 'h-full transition-all';
+      strengthMeter.className = 'strength-fill';
       strengthText.textContent = 'Password strength';
-      strengthText.className = 'text-xs text-muted mt-1';
+      strengthText.className = 'strength-label';
     } else if (score <= 1) {
       strengthMeter.style.width = '25%';
-      strengthMeter.className = 'h-full bg-red-500 transition-all';
+      strengthMeter.className = 'strength-fill weak';
       strengthText.textContent = 'Weak';
-      strengthText.className = 'text-xs text-red-500 mt-1 font-semibold';
+      strengthText.className = 'strength-label weak';
     } else if (score <= 3) {
       strengthMeter.style.width = '60%';
-      strengthMeter.className = 'h-full bg-yellow-500 transition-all';
+      strengthMeter.className = 'strength-fill moderate';
       strengthText.textContent = 'Moderate';
-      strengthText.className = 'text-xs text-yellow-600 mt-1 font-semibold';
+      strengthText.className = 'strength-label moderate';
     } else {
       strengthMeter.style.width = '100%';
-      strengthMeter.className = 'h-full bg-green-500 transition-all';
+      strengthMeter.className = 'strength-fill strong';
       strengthText.textContent = 'Strong';
-      strengthText.className = 'text-xs text-green-600 mt-1 font-semibold';
+      strengthText.className = 'strength-label strong';
     }
   });
 }
@@ -77,7 +77,7 @@ if (confirmInput && passwordInput && matchError) {
     const matches = confirmInput.value === passwordInput.value;
 
     matchError.classList.toggle('hidden', !hasText || matches);
-    confirmInput.classList.toggle('border-red-500', hasText && !matches);
-    confirmInput.classList.toggle('border-green-500', hasText && matches);
+    confirmInput.classList.toggle('input-error', hasText && !matches);
+    confirmInput.classList.toggle('input-success', hasText && matches);
   });
 }

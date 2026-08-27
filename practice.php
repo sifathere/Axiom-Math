@@ -1,13 +1,9 @@
 <?php
 session_start();
+$base_path = '';
 require_once 'auth/db_config.php';
 
-// Practice Problems requires login — this is one of the two features
-// that make registering worthwhile, alongside the AI Solver.
-if (!isset($_SESSION['user_id'])) {
-    header("Location: auth/login.php");
-    exit();
-}
+$is_logged_in = isset($_SESSION['user_id']);
 
 // Loose-match normalization: real checking, but forgiving about
 // spacing/case/formatting differences a student might type differently
@@ -20,28 +16,35 @@ function normalize_answer($str) {
     return $str;
 }
 
-$feedback = null; // ['problem_id' => .., 'correct' => bool, 'answer' => ..]
+$feedback = null; // ['type' => 'login_required'|'result', 'problem_id' => .., 'correct' => bool, 'answer' => ..]
 
 // ---- Handle an answer submission ----
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['problem_id']) && isset($_POST['submitted_answer'])) {
     $problem_id = (int) $_POST['problem_id'];
-    $submitted = trim($_POST['submitted_answer']);
 
-    $stmt = $conn->prepare("SELECT answer FROM practice_problems WHERE problem_id = ?");
-    $stmt->bind_param("i", $problem_id);
-    $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    if (!$is_logged_in) {
+        // Guests can browse and see hints freely — but checking an answer
+        // and saving progress is the feature that requires an account.
+        $feedback = ['type' => 'login_required', 'problem_id' => $problem_id];
+    } else {
+        $submitted = trim($_POST['submitted_answer']);
 
-    if ($row) {
-        $is_correct = (normalize_answer($submitted) === normalize_answer($row['answer'])) ? 1 : 0;
+        $stmt = $conn->prepare("SELECT answer FROM practice_problems WHERE problem_id = ?");
+        $stmt->bind_param("i", $problem_id);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
 
-        $insert = $conn->prepare("INSERT INTO user_progress (user_id, problem_id, is_correct) VALUES (?, ?, ?)");
-        $insert->bind_param("iii", $_SESSION['user_id'], $problem_id, $is_correct);
-        $insert->execute();
-        $insert->close();
+        if ($row) {
+            $is_correct = (normalize_answer($submitted) === normalize_answer($row['answer'])) ? 1 : 0;
 
-        $feedback = ['problem_id' => $problem_id, 'correct' => (bool) $is_correct, 'answer' => $row['answer']];
+            $insert = $conn->prepare("INSERT INTO user_progress (user_id, problem_id, is_correct) VALUES (?, ?, ?)");
+            $insert->bind_param("iii", $_SESSION['user_id'], $problem_id, $is_correct);
+            $insert->execute();
+            $insert->close();
+
+            $feedback = ['type' => 'result', 'problem_id' => $problem_id, 'correct' => (bool) $is_correct, 'answer' => $row['answer']];
+        }
     }
 }
 
@@ -75,22 +78,7 @@ if ($result) {
 </head>
 <body>
 
-<header>
-  <nav>
-    <a href="index.html" class="logo"><span class="mark">∫</span>AxiomMath</a>
-    <div class="nav-links">
-      <a href="formulas.php">Formula Hub</a>
-      <a href="practice.php">Practice</a>
-      <a href="solver.php">AI Solver</a>
-      <a href="how-it-works.html">How it works</a>
-      <a href="about.html">About</a>
-    </div>
-    <div class="nav-cta">
-      <a href="auth/dashboard.php" class="btn-login">Dashboard</a>
-      <a href="auth/logout.php" class="btn btn-primary">Log out</a>
-    </div>
-  </nav>
-</header>
+<?php include 'includes/nav.php'; ?>
 
 <section class="page-intro">
   <span class="symbol" style="top:20%; left:10%; font-size:32px; color:rgba(255,255,255,0.18);">π</span>
@@ -102,15 +90,19 @@ if ($result) {
 
 <section class="container">
   <?php if ($feedback): ?>
-    <div class="save-banner <?php echo $feedback['correct'] ? '' : 'save-banner-wrong'; ?>">
-      <?php if ($feedback['correct']): ?>
-        ✓ Correct! Saved to your progress.
-      <?php else: ?>
+    <?php if ($feedback['type'] === 'login_required'): ?>
+      <div class="save-banner save-banner-wrong">
+        Please <a href="auth/login.php">log in</a> to check your answer and save your progress.
+      </div>
+    <?php elseif ($feedback['correct']): ?>
+      <div class="save-banner">✓ Correct! Saved to your progress.</div>
+    <?php else: ?>
+      <div class="save-banner save-banner-wrong">
         Not quite. The correct answer was:
         <strong><?php echo htmlspecialchars($feedback['answer']); ?></strong>
-        — still saved to your progress so you can see it on your dashboard.
-      <?php endif; ?>
-    </div>
+        — still saved to your progress so you can see it on your profile.
+      </div>
+    <?php endif; ?>
   <?php endif; ?>
 
   <?php if (empty($problems_by_category)): ?>
@@ -148,49 +140,7 @@ if ($result) {
   <?php endif; ?>
 </section>
 
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-logo"><span class="mark" style="width:26px;height:26px;font-size:13px;">∫</span>AxiomMath</div>
-        <p style="font-size:14px; line-height:1.6;">Making mathematics understandable, one guided step at a time.</p>
-      </div>
-      <div>
-        <h4>Quick links</h4>
-        <ul>
-          <li><a href="formulas.php">Formula library</a></li>
-          <li><a href="practice.php">Practice</a></li>
-          <li><a href="how-it-works.html">How it works</a></li>
-          <li><a href="about.html">About</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="#">Privacy</a></li>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Help</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Follow</h4>
-        <ul>
-          <li><a href="#">GitHub</a></li>
-          <li><a href="#">LinkedIn</a></li>
-          <li><a href="#">YouTube</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 AxiomMath. All rights reserved.</span>
-      <div class="socials">
-        <a href="#">GitHub</a>
-        <a href="#">LinkedIn</a>
-        <a href="#">YouTube</a>
-      </div>
-    </div>
-  </div>
-</footer>
+<?php include 'includes/footer.php'; ?>
 
 <script>
   document.querySelectorAll('.reveal-btn').forEach(function (btn) {

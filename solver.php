@@ -1,12 +1,8 @@
 <?php
 session_start();
+$base_path = '';
 
-// AI Solver requires login — this is one of the two features that make
-// registering worthwhile, alongside Practice Problems.
-if (!isset($_SESSION['user_id'])) {
-    header("Location: auth/login.php");
-    exit();
-}
+$is_logged_in = isset($_SESSION['user_id']);
 
 require_once 'ai_config.php';
 
@@ -19,6 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($question)) {
         $error_message = "Please type a math problem first.";
+    } elseif (!$is_logged_in) {
+        // Guests can see and use the form, but the actual AI call —
+        // the feature that costs real API usage — requires an account.
+        $error_message = 'login_required';
     } elseif (GEMINI_API_KEY === 'PASTE_YOUR_KEY_HERE' || empty(GEMINI_API_KEY)) {
         $error_message = "No API key set yet. Add your free Gemini key to ai_config.php.";
     } else {
@@ -101,89 +101,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Solver | AxiomMath</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          primary: '#2563EB',
-          'primary-dark': '#1d4ed8',
-          accent: '#38BDF8',
-          dark: '#0F172A',
-          muted: '#64748B',
-          line: '#E2E8F0',
-        },
-        fontFamily: {
-          display: ['"Space Grotesk"', 'sans-serif'],
-          sans: ['Inter', 'sans-serif'],
-          mono: ['"JetBrains Mono"', 'monospace'],
-        },
-      },
-    },
-  };
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-[#F8FAFC] font-sans text-dark antialiased min-h-screen">
+<body>
 
-<div class="max-w-4xl mx-auto px-6 pt-6 flex justify-between items-center">
-  <a href="index.html" class="inline-flex items-center gap-2 font-display font-bold text-lg text-dark hover:text-primary">
-    <span class="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-mono text-sm">∫</span>
-    AxiomMath
-  </a>
-  <div class="flex items-center gap-4 text-sm">
-    <a href="auth/dashboard.php" class="text-muted hover:text-dark transition">Dashboard</a>
-    <a href="auth/logout.php" class="text-muted hover:text-dark transition">Log out</a>
-  </div>
-</div>
+<?php include 'includes/nav.php'; ?>
 
-<div class="max-w-2xl mx-auto p-6">
-  <header class="mb-8 text-center">
-    <h1 class="font-display text-3xl font-bold text-dark">AI Solver</h1>
-    <p class="text-muted mt-2">Type a problem. Get a hint for the next step — not the whole answer.</p>
-  </header>
+<section class="page-intro">
+  <span class="symbol" style="top:20%; left:10%; font-size:32px; color:rgba(255,255,255,0.18);">Σ</span>
+  <span class="symbol" style="top:58%; left:86%; font-size:26px; color:rgba(255,255,255,0.18); animation-delay:0.8s;">∞</span>
+  <span class="eyebrow">AI Solver</span>
+  <h1>Get a Guided Hint</h1>
+  <p>Type a problem. Get a hint for the next step — not the whole answer.</p>
+</section>
 
-  <main class="bg-white p-8 rounded-2xl shadow-md border border-line">
-    <?php if (!empty($error_message)): ?>
-      <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
-        <?php echo htmlspecialchars($error_message); ?>
-      </div>
+<section class="container">
+  <div class="solver-box">
+    <?php if ($error_message === 'login_required'): ?>
+      <div class="auth-error">Please <a href="auth/login.php">log in</a> to use the AI Solver.</div>
+    <?php elseif (!empty($error_message)): ?>
+      <div class="auth-error"><?php echo htmlspecialchars($error_message); ?></div>
     <?php endif; ?>
 
-    <form action="solver.php" method="POST" class="space-y-4">
-      <div>
-        <label for="question" class="block text-sm font-semibold text-dark mb-1">Your problem</label>
-        <textarea id="question" name="question" required rows="3"
-          class="w-full px-4 py-3 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:outline-none font-mono text-sm"
-          placeholder="e.g., Solve 2x^2 + 5x - 3 = 0"><?php echo htmlspecialchars($question); ?></textarea>
-      </div>
-
-      <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2.5 rounded-lg transition">
-        Get a hint
-      </button>
+    <form action="solver.php" method="POST">
+      <label for="question" style="display:block; font-size:13px; font-weight:600; color:var(--dark); margin-bottom:6px;">Your problem</label>
+      <textarea id="question" name="question" required rows="3"
+        placeholder="e.g., Solve 2x^2 + 5x - 3 = 0"><?php echo htmlspecialchars($question); ?></textarea>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Get a hint</button>
     </form>
 
     <?php if (!empty($ai_response)): ?>
-      <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-5">
-        <h3 class="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Hint</h3>
-        <p class="text-dark leading-relaxed"><?php echo nl2br(htmlspecialchars($ai_response)); ?></p>
+      <div class="hint-box">
+        <h3>Hint</h3>
+        <p><?php echo nl2br(htmlspecialchars($ai_response)); ?></p>
       </div>
     <?php endif; ?>
-  </main>
-</div>
-
-<footer class="bg-dark text-gray-400 mt-16 py-8 px-6">
-  <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
-    <span>&copy; 2026 AxiomMath. All rights reserved.</span>
-    <div class="flex gap-6">
-      <a href="index.html" class="hover:text-white transition">Home</a>
-      <a href="formulas.php" class="hover:text-white transition">Formula Hub</a>
-      <a href="practice.php" class="hover:text-white transition">Practice</a>
-    </div>
   </div>
-</footer>
+</section>
+
+<?php include 'includes/footer.php'; ?>
 
 </body>
 </html>
