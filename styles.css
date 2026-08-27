@@ -555,3 +555,183 @@ footer{background:var(--dark); color:#94A3B8; padding:64px 0 28px; margin-top:40
 }
 .answer-form input[type="text"]:focus{outline:none; border-color:var(--primary);}
 .answer-form .progress-btn{align-self:flex-start; padding:8px 16px;}
+
+/* ---- Profile icon (replaces Log in/Sign up when logged in) ---- */
+.profile-icon{
+  width:38px; height:38px; border-radius:50%;
+  background:linear-gradient(135deg, var(--primary), var(--accent));
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:700; font-size:15px;
+  text-decoration:none; transition:transform .2s ease, box-shadow .2s ease;
+}
+.profile-icon:hover{transform:translateY(-1px); box-shadow:0 6px 16px -4px rgba(37,99,235,0.4);}
+
+/* ---- Auth forms (login/register), styled to match the rest of the site ---- */
+.auth-card{
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  padding:36px; max-width:420px; margin:48px auto; box-shadow:0 18px 40px -20px rgba(15,23,42,0.15);
+}
+.auth-card h1{font-size:26px; margin-bottom:8px; text-align:center;}
+.auth-card > p{color:var(--muted); text-align:center; margin-bottom:28px; font-size:14.5px;}
+.auth-field{margin-bottom:18px;}
+.auth-field label{display:block; font-size:13px; font-weight:600; color:var(--dark); margin-bottom:6px;}
+.auth-field input{
+  width:100%; padding:10px 14px; border:1px solid var(--line); border-radius:9px;
+  font-family:var(--font-body); font-size:14.5px;
+}
+.auth-field input:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(37,99,235,0.12);}
+.auth-error{
+  background:#FEF2F2; border:1px solid #FECACA; color:#B91C1C;
+  padding:10px 14px; border-radius:9px; font-size:13.5px; margin-bottom:18px;
+}
+.auth-success{
+  background:#F0FDF4; border:1px solid #BBF7D0; color:#15803D;
+  padding:10px 14px; border-radius:9px; font-size:13.5px; margin-bottom:18px;
+}
+.auth-switch{text-align:center; margin-top:20px; font-size:13.5px; color:var(--muted);}
+.auth-switch a{color:var(--primary); font-weight:600;}
+
+/* ---- Solver page (matching the rest of the site now, not Tailwind) ---- */
+.solver-box{
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  padding:32px; max-width:600px; margin:0 auto;
+}
+.solver-box textarea{
+  width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px;
+  font-family:var(--font-mono); font-size:14px; resize:vertical; margin-bottom:16px;
+}
+.solver-box textarea:focus{outline:none; border-color:var(--primary);}
+.hint-box{
+  background:rgba(37,99,235,0.06); border:1px solid rgba(37,99,235,0.2);
+  border-radius:10px; padding:18px; margin-top:20px;
+}
+.hint-box h3{font-family:var(--font-mono); font-size:12px; text-transform:uppercase;
+  letter-spacing:.05em; color:var(--primary); margin-bottom:8px;}
+
+/* ---- Profile / dashboard page ---- */
+.stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin:28px 0;}
+.stat-box{background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px;}
+.stat-box h4{font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:8px;}
+.stat-box .stat-num{font-family:var(--font-display); font-size:28px; font-weight:700; color:var(--dark);}
+.action-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px; margin:28px 0;}
+.action-card{
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px;
+  text-decoration:none; color:var(--dark); display:block; transition:all .2s ease;
+}
+.action-card:hover{border-color:var(--primary); transform:translateY(-3px); box-shadow:0 14px 30px -16px rgba(37,99,235,0.3);}
+.action-card .icon{font-size:24px; margin-bottom:10px;}
+.action-card h4{font-family:var(--font-display); font-weight:700; margin-bottom:6px;}
+.action-card p{font-size:13.5px; color:var(--muted);}
+
+/* ---- Auth field validation states (used by validation.js) ---- */
+.auth-field input.input-error{border-color:#EF4444;}
+.auth-field input.input-error:focus{box-shadow:0 0 0 3px rgba(239,68,68,0.12);}
+.auth-field input.input-success{border-color:#22C55E;}
+.auth-field input.input-success:focus{box-shadow:0 0 0 3px rgba(34,197,94,0.12);}
+.auth-field .field-error{color:#DC2626; font-size:12px; margin-top:4px;}
+
+/* ---- Password strength meter (register.php) ---- */
+.strength-bar{
+  margin-top:8px; height:6px; width:100%;
+  background:var(--line); border-radius:100px; overflow:hidden;
+}
+.strength-fill{height:100%; width:0%; transition:all .3s ease; border-radius:100px;}
+.strength-fill.weak{background:#EF4444;}
+.strength-fill.moderate{background:#F59E0B;}
+.strength-fill.strong{background:#22C55E;}
+
+.strength-label{font-size:12px; color:var(--muted); margin-top:6px;}
+.strength-label.weak{color:#EF4444; font-weight:600;}
+.strength-label.moderate{color:#D97706; font-weight:600;}
+.strength-label.strong{color:#16A34A; font-weight:600;}
+
+/* ---- Dashboard: stat cards + quick-action cards ---- */
+.stat-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px; margin:32px 0 44px;
+}
+.stat-card{
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px;
+}
+.stat-card h3{font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+.stat-card .stat-value{font-family:var(--font-display); font-size:30px; font-weight:700; color:var(--dark); margin-top:8px;}
+.stat-card .stat-dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px;}
+.stat-card .stat-sub{font-size:12px; color:var(--muted); margin-top:10px;}
+
+.action-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px; margin:20px 0 44px;
+}
+.action-card{
+  display:block; background:#fff; border:1px solid var(--line); border-radius:14px;
+  padding:24px; text-decoration:none; color:inherit; transition:all .2s ease;
+}
+.action-card:hover{border-color:var(--primary); box-shadow:0 10px 24px -12px rgba(37,99,235,0.25); transform:translateY(-2px);}
+.action-card .action-icon{font-size:26px; margin-bottom:10px;}
+.action-card h3{font-family:var(--font-display); font-weight:700; color:var(--dark); margin-bottom:6px;}
+.action-card p{font-size:13.5px; color:var(--muted);}
+
+.session-meta{
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin-bottom:40px;
+}
+.session-meta h3{font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:10px;}
+.session-meta ul{list-style:none; font-size:12.5px; color:var(--muted); display:flex; flex-direction:column; gap:4px;}
+.session-meta code{background:#F1F5F9; color:var(--primary); padding:2px 6px; border-radius:4px; font-family:var(--font-mono);}
+
+/* ---- Homepage: "Solution vs AxiomMath" comparison, scroll-in animated ---- */
+.compare-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:36px;
+}
+@media (max-width:700px){ .compare-grid{grid-template-columns:1fr;} }
+
+.compare-card{
+  border-radius:16px; padding:32px;
+  opacity:0; transform:translateY(24px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.compare-card.in-view{opacity:1; transform:translateY(0);}
+
+.compare-card li{
+  opacity:0; transform:translateX(-10px);
+  transition:opacity .4s ease, transform .4s ease;
+  padding:10px 0 10px 28px; position:relative; font-size:14.5px;
+  border-bottom:1px solid var(--line);
+}
+.compare-card.in-view li{opacity:1; transform:translateX(0);}
+.compare-card li:nth-child(1){transition-delay:.10s;}
+.compare-card li:nth-child(2){transition-delay:.20s;}
+.compare-card li:nth-child(3){transition-delay:.30s;}
+.compare-card li:nth-child(4){transition-delay:.40s;}
+
+.compare-bad{background:#F8FAFC; border:1px solid var(--line);}
+.compare-bad h3{color:var(--muted); font-family:var(--font-display); margin-bottom:18px;}
+.compare-bad ul{list-style:none;}
+.compare-bad li{color:var(--muted);}
+.compare-bad li::before{content:"✕"; position:absolute; left:0; color:#CBD5E1; font-weight:700;}
+
+.compare-good{
+  background:#fff; border:2px solid var(--primary); position:relative;
+  animation:glow-pulse 3s ease-in-out infinite;
+}
+.compare-good h3{color:var(--primary); font-family:var(--font-display); margin-bottom:18px;}
+.compare-good ul{list-style:none;}
+.compare-good li{color:var(--dark); font-weight:500;}
+.compare-good li::before{content:"✓"; position:absolute; left:0; color:var(--primary); font-weight:700;}
+
+@keyframes glow-pulse{
+  0%, 100%{box-shadow:0 0 0 0 rgba(37,99,235,0.15);}
+  50%{box-shadow:0 0 0 12px rgba(37,99,235,0);}
+}
+@media (prefers-reduced-motion: reduce){
+  .compare-card, .compare-card li{transition:none; opacity:1; transform:none;}
+  .compare-good{animation:none;}
+}
+
+/* ---- Homepage: "Try It Now" live demo box ---- */
+.demo-box{
+  max-width:600px; margin:24px auto 0; background:#fff; border:1px solid var(--line);
+  border-radius:16px; padding:32px; text-align:center;
+  box-shadow:0 20px 40px -24px rgba(15,23,42,0.15);
+}
+.demo-box h3{font-family:var(--font-mono); font-size:19px; margin:14px 0 18px; color:var(--dark);}
+.demo-box .reveal-box{text-align:left;}
